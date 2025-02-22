@@ -32,14 +32,14 @@
 
 using namespace backward;
 
-void badass_function() {
+static void badass_function() {
   char *ptr = (char *)42;
   *ptr = 42;
 }
 
 TEST_SEGFAULT(invalid_write) { badass_function(); }
 
-int you_shall_not_pass() {
+static int you_shall_not_pass() {
   char *ptr = (char *)42;
   int v = *ptr;
   return v;
@@ -50,7 +50,7 @@ TEST_SEGFAULT(invalid_read) {
   std::cout << "v=" << v << std::endl;
 }
 
-void abort_abort_I_repeat_abort_abort() {
+static void abort_abort_I_repeat_abort_abort() {
   std::cout << "Jumping off the boat!" << std::endl;
   abort();
 }
@@ -59,9 +59,9 @@ TEST_ABORT(calling_abort) { abort_abort_I_repeat_abort_abort(); }
 
 // aarch64, mips, PowerPC and RISC-V do not trap Division by zero
 #if !defined(__aarch64__) && !defined(__mips__) && !defined (__powerpc__) && !defined (__riscv)
-volatile int zero = 0;
+static volatile int zero = 0;
 
-int divide_by_zero() {
+static int divide_by_zero() {
   std::cout << "And the wild black hole appears..." << std::endl;
   int v = 42 / zero;
   return v;
@@ -75,7 +75,10 @@ TEST_DIVZERO(divide_by_zero) {
 
 // Darwin does not allow RLIMIT_STACK to be reduced
 #ifndef __APPLE__
-int bye_bye_stack(int i) { return bye_bye_stack(i + 1) + bye_bye_stack(i * 2); }
+// MSVC complains but builds this: warning C4717 : 'bye_bye_stack' : recursive on all control paths, function will cause runtime stack overflow.
+static int bye_bye_stack(int i) {
+  return bye_bye_stack(i + 1) + bye_bye_stack(i * 2);
+}
 
 TEST_SEGFAULT(stackoverflow) {
 #ifndef _WIN32

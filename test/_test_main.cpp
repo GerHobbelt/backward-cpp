@@ -39,9 +39,9 @@
 #include <stdarg.h>
 
 #ifdef _WIN32
-char argv0[MAX_PATH];
+static char argv0[MAX_PATH];
 inline const char *getprogname() {
-  return GetModuleFileName(NULL, argv0, sizeof(argv0)) ? argv0 : NULL;
+  return GetModuleFileNameA(NULL, argv0, sizeof(argv0)) ? argv0 : NULL;
 }
 #elif !defined(__APPLE__)
 // N.B.  getprogname() is an Apple/BSD-ism.
@@ -50,7 +50,7 @@ inline const char *getprogname() {
 #define getprogname() program_invocation_name
 #endif
 
-void error(int status, int errnum, const char *format, ...) {
+static void error(int status, int errnum, const char *format, ...) {
   fflush(stdout);
   fprintf(stderr, "%s: ", getprogname());
 
@@ -72,7 +72,7 @@ void error(int status, int errnum, const char *format, ...) {
 
 using namespace test;
 
-bool run_test(TestBase &test, bool use_child_process = true) {
+static bool run_test(TestBase &test, bool use_child_process = true) {
   if (!use_child_process) {
     exit(static_cast<int>(test.run()));
   }
@@ -85,12 +85,12 @@ bool run_test(TestBase &test, bool use_child_process = true) {
 
 #ifdef _WIN32
   char filename[256];
-  GetModuleFileName(NULL, filename, 256); // TODO: check for error
+  GetModuleFileNameA(NULL, filename, 256); // TODO: check for error
   std::string cmd_line = filename;
   cmd_line += " --nofork ";
   cmd_line += test.name;
 
-  STARTUPINFO si;
+  STARTUPINFOA si;
   PROCESS_INFORMATION pi;
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
@@ -185,7 +185,8 @@ bool run_test(TestBase &test, bool use_child_process = true) {
   return status == test.expected_status;
 }
 
-int main(int argc, const char *const argv[]) {
+extern "C"
+int main(int argc, const char ** const argv) {
 
 #ifdef _WIN32
   _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);

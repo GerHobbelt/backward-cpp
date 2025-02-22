@@ -29,13 +29,13 @@ using namespace backward;
 
 typedef StackTrace stacktrace_t;
 
-void end_of_our_journey(stacktrace_t &st) {
+static void end_of_our_journey(stacktrace_t &st) {
   if (!st.size()) {
     st.load_here();
   }
 }
 
-int rec(stacktrace_t &st, int level) {
+static int rec(stacktrace_t &st, int level) {
   if (level <= 1) {
     end_of_our_journey(st);
     return 0;
@@ -75,7 +75,7 @@ TEST(recursion) {
   }
 }
 
-int fib(StackTrace &st, int level) {
+static int fib(StackTrace &st, int level) {
   if (level == 2) {
     return 1;
   }

@@ -28,7 +28,7 @@ private:
   }
 };
 
-void f(int i) {
+static void f(int i) {
   if (i >= 42) {
     throw TracedException();
   } else {
@@ -37,7 +37,7 @@ void f(int i) {
   }
 }
 
-int main() {
+int main(void) {
   try {
     f(0);
   } catch (const TracedException &ex) {

@@ -28,7 +28,7 @@
 
 using namespace backward;
 
-void collect_trace(StackTrace &st) { st.load_here(); }
+static void collect_trace(StackTrace &st) { st.load_here(); }
 
 TEST(minitrace) {
   Printer printer;
@@ -39,13 +39,13 @@ TEST(minitrace) {
   printer.print(st, std::cout);
 }
 
-void d(StackTrace &st) { st.load_here(); }
+static void d(StackTrace &st) { st.load_here(); }
 
-void c(StackTrace &st) { return d(st); }
+static void c(StackTrace &st) { return d(st); }
 
-void b(StackTrace &st) { return c(st); }
+static void b(StackTrace &st) { return c(st); }
 
-NOINLINE void a(StackTrace &st) { return b(st); }
+static NOINLINE void a(StackTrace &st) { return b(st); }
 
 TEST(smalltrace) {
   Printer printer;
