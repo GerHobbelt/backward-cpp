@@ -350,6 +350,11 @@ typedef int ssize_t;
 #include <windows.h>
 #include <winnt.h>
 
+#include <io.h>       // _isatty
+#ifndef isatty
+  #define isatty _isatty
+#endif
+
 #include <psapi.h>
 #include <signal.h>
 
@@ -3965,7 +3970,7 @@ private:
   std::vector<char> buffer;
 };
 
-#ifdef BACKWARD_SYSTEM_LINUX
+#if defined(BACKWARD_SYSTEM_LINUX) || defined(BACKWARD_SYSTEM_WINDOWS)
 
 namespace Color {
 enum type { yellow = 33, purple = 35, red = 31, reset = 39 };
@@ -4006,7 +4011,7 @@ private:
   bool _enabled;
 };
 
-#else // ndef BACKWARD_SYSTEM_LINUX
+#else // ndef BACKWARD_SYSTEM_LINUX || BACKWARD_SYSTEM_WINDOWS 
 
 #ifdef BACKWARD_SYSTEM_WINDOWS
 
@@ -4059,7 +4064,7 @@ public:
 };
 
 #endif // BACKWARD_SYSTEM_WINDOWS
-#endif // BACKWARD_SYSTEM_LINUX
+#endif // BACKWARD_SYSTEM_LINUX || BACKWARD_SYSTEM_WINDOWS 
 
 class Printer {
 public:
