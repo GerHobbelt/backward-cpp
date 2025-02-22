@@ -3747,7 +3747,7 @@ public:
     // but look, I will reuse it two times!
     // What a good boy am I.
     struct isspace {
-      bool operator()(char c) { return std::isspace(c); }
+      bool operator()(char c) { return !!std::isspace(c); }
     };
 
     bool started = false;
