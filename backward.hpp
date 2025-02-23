@@ -4183,8 +4183,8 @@ private:
                         Colorize &colorize, Color::type color_code,
                         void *addr = nullptr) {
     colorize.set_color(color_code);
-    os << indent << "Source \"" << source_loc.filename << "\", line "
-       << source_loc.line << ", in " << source_loc.function;
+    os << indent << "Source \"" << source_loc.filename << ":" << source_loc.line 
+       << "\", in " << source_loc.function;
     colorize.set_color(Color::reset);
 
     if (address && addr != nullptr) {
