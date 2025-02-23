@@ -84,6 +84,7 @@ static bool run_test(TestBase &test, bool use_child_process = true) {
   test::TestStatus status = test::SUCCESS;
 
 #ifdef _WIN32
+
   char filename[256];
   GetModuleFileNameA(NULL, filename, 256); // TODO: check for error
   std::string cmd_line = filename;
